@@ -1,76 +1,183 @@
-import React from 'react';
-import { SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-// Import professional icons from Expo
 import { FontAwesome5, MaterialCommunityIcons } from '@expo/vector-icons';
+import React, { useState } from 'react';
+import {
+  KeyboardAvoidingView,
+  Platform,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View
+} from 'react-native';
 
 const Dashboard = ({ navigation }) => {
+  const [name, setName] = useState('');
+  const [selectedRole, setSelectedRole] = useState(null); // 'Farmer' or 'Operator'
+
+  const handleContinue = () => {
+    if (!name.trim()) {
+      alert('Please enter your name');
+      return;
+    }
+    if (!selectedRole) {
+      alert('Please select a role');
+      return;
+    }
+
+    // Navigate based on selection
+    if (selectedRole === 'Farmer') {
+      navigation.navigate('FarmerBooking'); // We will rename this to FarmerDashboard soon
+    } else {
+      navigation.navigate('OperatorDashboard');
+    }
+  };
+
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>Bharat Seeder</Text>
-        <Text style={styles.headerSubtitle}>Choose your portal to proceed</Text>
-      </View>
+    <SafeAreaView style={styles.safeArea}>
+      <KeyboardAvoidingView 
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={styles.container}
+      >
+        {/* Dark Green Header */}
+        <View style={styles.header}>
+          <Text style={styles.welcomeText}>Welcome to</Text>
+          <Text style={styles.appName}>Bharat Seeder</Text>
+          <Text style={styles.subText}>Tell us about yourself</Text>
+        </View>
 
-      <View style={styles.roleContainer}>
-        {/* Farmer Card */}
-        <TouchableOpacity 
-          style={[styles.card, { borderColor: '#2E7D32' }]} 
-          onPress={() => navigation.navigate('FarmerBooking')}
-        >
-          <View style={styles.iconCircle}>
-            <FontAwesome5 name="tractor" size={40} color="#2E7D32" />
-          </View>
-          <Text style={styles.cardTitle}>Farmer Portal</Text>
-          <Text style={styles.cardDesc}>Request high-tech seeding machinery</Text>
-        </TouchableOpacity>
+        {/* White Form Container */}
+        <View style={styles.formContainer}>
+          <Text style={styles.label}>Your Name</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="e.g. Gurpreet Singh"
+            placeholderTextColor="#999"
+            value={name}
+            onChangeText={setName}
+          />
 
-        {/* Operator Card */}
-        <TouchableOpacity 
-          style={[styles.card, { borderColor: '#5D4037' }]} 
-          onPress={() => navigation.navigate('OperatorDashboard')}
-        >
-          <View style={[styles.iconCircle, { backgroundColor: '#EFEBE9' }]}>
-            <MaterialCommunityIcons name="cog-sync" size={45} color="#5D4037" />
-          </View>
-          <Text style={styles.cardTitle}>Operator Portal</Text>
-          <Text style={styles.cardDesc}>Manage fleet and fulfill farm requests</Text>
-        </TouchableOpacity>
-      </View>
+          <Text style={styles.label}>Select Your Role</Text>
+          
+          {/* Farmer Selection Card */}
+          <TouchableOpacity 
+            style={[
+              styles.roleCard, 
+              selectedRole === 'Farmer' && styles.selectedCard
+            ]}
+            onPress={() => setSelectedRole('Farmer')}
+            activeOpacity={0.8}
+          >
+            <View style={styles.iconContainer}>
+              <FontAwesome5 name="tractor" size={24} color="#29563A" />
+            </View>
+            <View style={styles.roleTextContainer}>
+              <Text style={styles.roleTitle}>Farmer</Text>
+              <Text style={styles.roleDesc}>Book machinery for your fields</Text>
+            </View>
+            {selectedRole === 'Farmer' && (
+              <MaterialCommunityIcons name="check-circle" size={24} color="#29563A" />
+            )}
+          </TouchableOpacity>
+
+          {/* Operator Selection Card */}
+          <TouchableOpacity 
+            style={[
+              styles.roleCard, 
+              selectedRole === 'Operator' && styles.selectedCard
+            ]}
+            onPress={() => setSelectedRole('Operator')}
+            activeOpacity={0.8}
+          >
+            <View style={styles.iconContainer}>
+               <MaterialCommunityIcons name="cog-transfer" size={28} color="#D68C45" />
+            </View>
+            <View style={styles.roleTextContainer}>
+              <Text style={styles.roleTitle}>Operator</Text>
+              <Text style={styles.roleDesc}>Offer your machine services</Text>
+            </View>
+            {selectedRole === 'Operator' && (
+              <MaterialCommunityIcons name="check-circle" size={24} color="#29563A" />
+            )}
+          </TouchableOpacity>
+
+          <TouchableOpacity 
+            style={[
+              styles.continueButton, 
+              (!name.trim() || !selectedRole) && styles.disabledButton
+            ]} 
+            onPress={handleContinue}
+            disabled={!name.trim() || !selectedRole}
+          >
+            <Text style={styles.continueText}>Continue →</Text>
+          </TouchableOpacity>
+        </View>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 };
 
-// ... (Styles remain the same as previous version, just removing the emoji-specific centering if needed)
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#F1F8E9', padding: 20 },
-  header: { marginTop: 40, marginBottom: 30, alignItems: 'center' },
-  headerTitle: { fontSize: 32, fontWeight: 'bold', color: '#1B5E20', letterSpacing: 1 },
-  headerSubtitle: { fontSize: 16, color: '#666', marginTop: 5 },
-  roleContainer: { flex: 1, justifyContent: 'center' },
-  card: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 24,
-    padding: 30,
-    marginBottom: 25,
-    borderWidth: 1.5,
-    alignItems: 'center',
-    elevation: 4,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 10,
+  safeArea: { flex: 1, backgroundColor: '#29563A' }, // Deep Forest Green
+  container: { flex: 1 },
+  header: { padding: 30, paddingTop: 40, paddingBottom: 40 },
+  welcomeText: { color: '#A3C4A8', fontSize: 16, marginBottom: 4 },
+  appName: { color: '#FFFFFF', fontSize: 32, fontWeight: 'bold', marginBottom: 4 },
+  subText: { color: '#E8F5E9', fontSize: 16 },
+  formContainer: { 
+    flex: 1, 
+    backgroundColor: '#F2F6F0', // Earthy off-white/sage
+    borderTopLeftRadius: 30, 
+    borderTopRightRadius: 30, 
+    padding: 24,
+    paddingTop: 30
   },
-  iconCircle: {
-    width: 90,
-    height: 90,
-    borderRadius: 45,
-    backgroundColor: '#E8F5E9',
+  label: { fontSize: 16, fontWeight: '600', color: '#333', marginBottom: 10, marginTop: 10 },
+  input: {
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: '#E0E0E0',
+    borderRadius: 12,
+    padding: 16,
+    fontSize: 16,
+    marginBottom: 20,
+    color: '#333'
+  },
+  roleCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1.5,
+    borderColor: '#E0E0E0',
+    borderRadius: 16,
+    padding: 16,
+    marginBottom: 16,
+  },
+  selectedCard: {
+    borderColor: '#29563A',
+    backgroundColor: '#EBF3EC',
+  },
+  iconContainer: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    backgroundColor: '#F5F5F5',
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 15,
+    marginRight: 16,
   },
-  cardTitle: { fontSize: 22, fontWeight: '700', color: '#333' },
-  cardDesc: { fontSize: 14, color: '#777', textAlign: 'center', marginTop: 8, lineHeight: 20 },
+  roleTextContainer: { flex: 1 },
+  roleTitle: { fontSize: 18, fontWeight: 'bold', color: '#333', marginBottom: 4 },
+  roleDesc: { fontSize: 14, color: '#666' },
+  continueButton: {
+    backgroundColor: '#29563A',
+    padding: 18,
+    borderRadius: 12,
+    alignItems: 'center',
+    marginTop: 20,
+  },
+  disabledButton: { backgroundColor: '#A3C4A8' },
+  continueText: { color: '#FFFFFF', fontSize: 18, fontWeight: 'bold' }
 });
 
 export default Dashboard;
