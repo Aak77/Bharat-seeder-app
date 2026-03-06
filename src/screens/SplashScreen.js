@@ -46,7 +46,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  logo: { width: width * 0.5, height: width * 0.5, resizeMode: "contain" },
+  logo: { width: width * 0.8, height: width * 0.5, resizeMode: "contain" },
 });
 
 export default SplashScreen;
