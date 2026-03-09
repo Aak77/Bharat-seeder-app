@@ -10,8 +10,11 @@ import {
   View,
 } from "react-native";
 
-const OperatorDashboard = ({ navigation }) => {
+const OperatorDashboard = ({ navigation, route }) => {
   const [isOnline, setIsOnline] = useState(false);
+
+  // Grab the passed name
+  const userName = route.params?.userName || "Operator";
 
   return (
     <SafeAreaView style={styles.container}>
@@ -20,10 +23,12 @@ const OperatorDashboard = ({ navigation }) => {
         showsVerticalScrollIndicator={false}
       >
         {/* Profile Header */}
+        {/* Profile Header */}
         <View style={styles.header}>
           <View>
             <Text style={styles.greeting}>Good Morning,</Text>
-            <Text style={styles.opName}>Harjinder Kaur</Text>
+            {/* Use the dynamic variable here */}
+            <Text style={styles.opName}>{userName}</Text>
           </View>
           <View style={styles.statusBadge}>
             <Text style={styles.statusText}>

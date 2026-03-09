@@ -14,14 +14,18 @@ import {
   View,
 } from "react-native";
 
-const FarmerBookingScreen = ({ navigation }) => {
+const FarmerBookingScreen = ({ navigation, route }) => {
+  // Safely grab the passed name, or fall back to "Guest"
+  const userName = route.params?.userName || "Guest";
   return (
     <SafeAreaView style={styles.safeArea}>
       <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
         {/* Header Section */}
+        {/* Header Section */}
         <View style={styles.header}>
           <View>
-            <Text style={styles.userName}>Gurpreet Singh</Text>
+            {/* Use the dynamic variable here */}
+            <Text style={styles.userName}>{userName}</Text>
             <Text style={styles.userPhone}>+91 9876543210</Text>
           </View>
           <TouchableOpacity style={styles.profileIcon}>
