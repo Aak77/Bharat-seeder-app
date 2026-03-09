@@ -58,8 +58,11 @@ const FarmerBookingScreen = ({ navigation }) => {
               <Text style={styles.trackingSub}>Baldev Kumar • 35 min</Text>
             </View>
           </View>
-          <TouchableOpacity>
-            <Text style={styles.trackButton}>Track →</Text>
+          <TouchableOpacity 
+            style={styles.bookActionBtn}
+            onPress={() => navigation.navigate('BookingConfig')}
+          >
+            <Text style={styles.bookActionText}>Book Now</Text>
           </TouchableOpacity>
         </View>
 
