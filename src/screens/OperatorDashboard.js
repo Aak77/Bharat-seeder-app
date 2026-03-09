@@ -10,7 +10,6 @@ import {
   View,
 } from "react-native";
 
-// FIX 1: Added { navigation } here!
 const OperatorDashboard = ({ navigation }) => {
   const [isOnline, setIsOnline] = useState(false);
 
@@ -39,9 +38,26 @@ const OperatorDashboard = ({ navigation }) => {
           </View>
         </View>
 
-        {/* Earnings Card */}
-        <View style={styles.earningsCard}>
-          <Text style={styles.cardLabel}>Today's Earnings</Text>
+        {/* Earnings Card - Now Clickable! */}
+        <TouchableOpacity
+          style={styles.earningsCard}
+          activeOpacity={0.9}
+          onPress={() => navigation.navigate("EarningsSummary")}
+        >
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
+            <Text style={styles.cardLabel}>Today's Earnings</Text>
+            <MaterialCommunityIcons
+              name="arrow-right-circle"
+              size={20}
+              color="#A3C4A8"
+            />
+          </View>
           <Text style={styles.amountText}>₹4,500</Text>
           <View style={styles.statsRow}>
             <View style={styles.miniStat}>
@@ -57,12 +73,11 @@ const OperatorDashboard = ({ navigation }) => {
               <Text style={styles.miniStatText}>12 Acres</Text>
             </View>
           </View>
-        </View>
+        </TouchableOpacity>
 
         {/* Alerts Section */}
         <Text style={styles.sectionTitle}>Recent Notifications</Text>
 
-        {/* FIX 2: Restored the Alert Card and moved Support Button below */}
         {!isOnline ? (
           <View style={styles.emptyState}>
             <MaterialCommunityIcons
@@ -77,7 +92,7 @@ const OperatorDashboard = ({ navigation }) => {
         ) : (
           <TouchableOpacity
             style={styles.alertCard}
-            onPress={() => navigation.navigate("IncomingRequest")} // Links to our new screen!
+            onPress={() => navigation.navigate("IncomingRequest")}
           >
             <View style={styles.alertHeader}>
               <View style={styles.newBadge}>
@@ -96,13 +111,11 @@ const OperatorDashboard = ({ navigation }) => {
           </TouchableOpacity>
         )}
 
-        {/* Contact Support Button - Safely at the bottom */}
-        <TouchableOpacity 
-          style={{ marginTop: 20, alignItems: 'center', padding: 15, backgroundColor: '#FFFFFF', borderRadius: 12 }}
-          onPress={() => navigation.navigate('Support')}
+        {/* Contact Support Button */}
+        <TouchableOpacity
+          style={styles.supportBtn}
+          onPress={() => navigation.navigate("Support")}
         >
-          <Text style={{ color: '#29563A', fontWeight: 'bold' }}>Contact Support</Text>
-        </TouchableOpacity>
           <MaterialCommunityIcons
             name="lifebuoy"
             size={20}
@@ -164,8 +177,6 @@ const styles = StyleSheet.create({
     marginTop: 10,
     paddingHorizontal: 40,
   },
-
-  // Alert Card Styles
   alertCard: {
     backgroundColor: "#FFF",
     padding: 20,
@@ -199,8 +210,6 @@ const styles = StyleSheet.create({
   },
   priceEstimate: { fontWeight: "bold", color: "#29563A" },
   viewTask: { color: "#D68C45", fontWeight: "bold" },
-
-  // Support Button Styles
   supportBtn: {
     marginTop: 40,
     flexDirection: "row",
