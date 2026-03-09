@@ -1,74 +1,216 @@
-import { Ionicons, MaterialIcons } from '@expo/vector-icons';
-import React from 'react';
-import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { FontAwesome5, MaterialCommunityIcons } from "@expo/vector-icons";
+import React, { useState } from "react";
+import {
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Switch,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
-const REQUESTS_DATA = [
-  { id: '1', farmer: 'Rajesh Kumar', location: 'Panvel, MH', area: '5 Acres', crop: 'Rice' },
-  { id: '2', farmer: 'Suresh Patil', location: 'Karjat, MH', area: '3 Acres', crop: 'Wheat' },
-];
-
-const OperatorDashboard = () => {
-  const renderRequest = ({ item }) => (
-    <View style={styles.requestCard}>
-      <View style={styles.cardHeader}>
-        <Ionicons name="person-circle" size={40} color="#1565C0" />
-        <View style={styles.headerInfo}>
-          <Text style={styles.farmerName}>{item.farmer}</Text>
-          <Text style={styles.cropText}>Crop: {item.crop}</Text>
-        </View>
-      </View>
-
-      <View style={styles.detailsRow}>
-        <View style={styles.detailItem}>
-          <MaterialIcons name="location-on" size={18} color="#666" />
-          <Text style={styles.detailLabel}>{item.location}</Text>
-        </View>
-        <View style={styles.detailItem}>
-          <MaterialIcons name="fullscreen" size={18} color="#666" />
-          <Text style={styles.detailLabel}>{item.area}</Text>
-        </View>
-      </View>
-
-      <View style={styles.actionButtons}>
-        <TouchableOpacity style={[styles.btn, styles.acceptBtn]}>
-          <Text style={styles.btnText}>ACCEPT</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={[styles.btn, styles.rejectBtn]}>
-          <Text style={styles.btnText}>DECLINE</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
-  );
+// FIX 1: Added { navigation } here!
+const OperatorDashboard = ({ navigation }) => {
+  const [isOnline, setIsOnline] = useState(false);
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.header}>Incoming Seeding Requests</Text>
-      <FlatList
-        data={REQUESTS_DATA}
-        renderItem={renderRequest}
-        keyExtractor={item => item.id}
+    <SafeAreaView style={styles.container}>
+      <ScrollView
+        contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
-      />
-    </View>
+      >
+        {/* Profile Header */}
+        <View style={styles.header}>
+          <View>
+            <Text style={styles.greeting}>Good Morning,</Text>
+            <Text style={styles.opName}>Harjinder Kaur</Text>
+          </View>
+          <View style={styles.statusBadge}>
+            <Text style={styles.statusText}>
+              {isOnline ? "ONLINE" : "OFFLINE"}
+            </Text>
+            <Switch
+              trackColor={{ false: "#767577", true: "#A3C4A8" }}
+              thumbColor={isOnline ? "#29563A" : "#f4f3f4"}
+              onValueChange={() => setIsOnline(!isOnline)}
+              value={isOnline}
+            />
+          </View>
+        </View>
+
+        {/* Earnings Card */}
+        <View style={styles.earningsCard}>
+          <Text style={styles.cardLabel}>Today's Earnings</Text>
+          <Text style={styles.amountText}>₹4,500</Text>
+          <View style={styles.statsRow}>
+            <View style={styles.miniStat}>
+              <FontAwesome5 name="tractor" size={14} color="#A3C4A8" />
+              <Text style={styles.miniStatText}>2 Jobs</Text>
+            </View>
+            <View style={styles.miniStat}>
+              <MaterialCommunityIcons
+                name="texture"
+                size={16}
+                color="#A3C4A8"
+              />
+              <Text style={styles.miniStatText}>12 Acres</Text>
+            </View>
+          </View>
+        </View>
+
+        {/* Alerts Section */}
+        <Text style={styles.sectionTitle}>Recent Notifications</Text>
+
+        {/* FIX 2: Restored the Alert Card and moved Support Button below */}
+        {!isOnline ? (
+          <View style={styles.emptyState}>
+            <MaterialCommunityIcons
+              name="bell-off-outline"
+              size={48}
+              color="#CCC"
+            />
+            <Text style={styles.emptyText}>
+              Go online to receive new seeding requests
+            </Text>
+          </View>
+        ) : (
+          <TouchableOpacity
+            style={styles.alertCard}
+            onPress={() => navigation.navigate("IncomingRequest")} // Links to our new screen!
+          >
+            <View style={styles.alertHeader}>
+              <View style={styles.newBadge}>
+                <Text style={styles.newText}>NEW REQUEST</Text>
+              </View>
+              <Text style={styles.timeText}>Just now</Text>
+            </View>
+            <Text style={styles.farmerName}>Rajesh Kumar</Text>
+            <Text style={styles.jobDetail}>
+              Happy Seeder • 5 Acres • Panvel
+            </Text>
+            <View style={styles.alertFooter}>
+              <Text style={styles.priceEstimate}>Est. Earnings: ₹2,200</Text>
+              <Text style={styles.viewTask}>Tap to View →</Text>
+            </View>
+          </TouchableOpacity>
+        )}
+
+        {/* Contact Support Button - Safely at the bottom */}
+        <TouchableOpacity
+          style={styles.supportBtn}
+          onPress={() => navigation.navigate("Support")}
+        >
+          <MaterialCommunityIcons
+            name="lifebuoy"
+            size={20}
+            color="#29563A"
+            style={{ marginRight: 8 }}
+          />
+          <Text style={styles.supportBtnText}>Contact Support</Text>
+        </TouchableOpacity>
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#F8F9FA', padding: 20 },
-  header: { fontSize: 24, fontWeight: 'bold', marginBottom: 20, color: '#1A237E', marginTop: 20 },
-  requestCard: { backgroundColor: '#fff', padding: 20, borderRadius: 16, marginBottom: 16, elevation: 3 },
-  cardHeader: { flexDirection: 'row', alignItems: 'center', marginBottom: 15 },
-  headerInfo: { marginLeft: 12 },
-  farmerName: { fontSize: 18, fontWeight: '700', color: '#333' },
-  cropText: { fontSize: 14, color: '#1565C0', fontWeight: '600' },
-  detailsRow: { flexDirection: 'row', justifyContent: 'space-between', borderTopWidth: 1, borderTopColor: '#EEE', paddingTop: 12 },
-  detailItem: { flexDirection: 'row', alignItems: 'center' },
-  detailLabel: { marginLeft: 4, color: '#666', fontSize: 14 },
-  actionButtons: { flexDirection: 'row', marginTop: 20, justifyContent: 'space-between' },
-  btn: { flex: 0.48, paddingVertical: 12, borderRadius: 10, alignItems: 'center' },
-  acceptBtn: { backgroundColor: '#2E7D32' },
-  rejectBtn: { backgroundColor: '#F44336' },
-  btnText: { color: '#fff', fontWeight: 'bold', letterSpacing: 0.5 }
+  container: { flex: 1, backgroundColor: "#F2F6F0" },
+  scrollContent: { padding: 20 },
+  header: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 25,
+  },
+  greeting: { fontSize: 14, color: "#666" },
+  opName: { fontSize: 22, fontWeight: "bold", color: "#29563A" },
+  statusBadge: { alignItems: "center" },
+  statusText: {
+    fontSize: 10,
+    fontWeight: "bold",
+    color: "#666",
+    marginBottom: 4,
+  },
+  earningsCard: {
+    backgroundColor: "#29563A",
+    padding: 25,
+    borderRadius: 24,
+    elevation: 4,
+  },
+  cardLabel: { color: "#A3C4A8", fontSize: 14, fontWeight: "600" },
+  amountText: {
+    color: "#FFF",
+    fontSize: 36,
+    fontWeight: "bold",
+    marginVertical: 10,
+  },
+  statsRow: { flexDirection: "row", marginTop: 5 },
+  miniStat: { flexDirection: "row", alignItems: "center", marginRight: 20 },
+  miniStatText: { color: "#FFF", marginLeft: 6, fontSize: 14 },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#333",
+    marginTop: 30,
+    marginBottom: 15,
+  },
+  emptyState: { alignItems: "center", marginTop: 40 },
+  emptyText: {
+    color: "#999",
+    textAlign: "center",
+    marginTop: 10,
+    paddingHorizontal: 40,
+  },
+
+  // Alert Card Styles
+  alertCard: {
+    backgroundColor: "#FFF",
+    padding: 20,
+    borderRadius: 20,
+    elevation: 2,
+    borderLeftWidth: 5,
+    borderLeftColor: "#D68C45",
+  },
+  alertHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 10,
+  },
+  newBadge: {
+    backgroundColor: "#FFF3E0",
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 6,
+  },
+  newText: { color: "#D68C45", fontSize: 10, fontWeight: "bold" },
+  timeText: { fontSize: 12, color: "#AAA" },
+  farmerName: { fontSize: 18, fontWeight: "bold", color: "#333" },
+  jobDetail: { fontSize: 14, color: "#666", marginTop: 4 },
+  alertFooter: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: 15,
+    borderTopWidth: 1,
+    borderTopColor: "#EEE",
+    paddingTop: 15,
+  },
+  priceEstimate: { fontWeight: "bold", color: "#29563A" },
+  viewTask: { color: "#D68C45", fontWeight: "bold" },
+
+  // Support Button Styles
+  supportBtn: {
+    marginTop: 40,
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 16,
+    backgroundColor: "#E8F5E9",
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: "#A3C4A8",
+  },
+  supportBtnText: { color: "#29563A", fontWeight: "bold", fontSize: 16 },
 });
 
 export default OperatorDashboard;
