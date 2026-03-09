@@ -97,10 +97,12 @@ const OperatorDashboard = ({ navigation }) => {
         )}
 
         {/* Contact Support Button - Safely at the bottom */}
-        <TouchableOpacity
-          style={styles.supportBtn}
-          onPress={() => navigation.navigate("Support")}
+        <TouchableOpacity 
+          style={{ marginTop: 20, alignItems: 'center', padding: 15, backgroundColor: '#FFFFFF', borderRadius: 12 }}
+          onPress={() => navigation.navigate('Support')}
         >
+          <Text style={{ color: '#29563A', fontWeight: 'bold' }}>Contact Support</Text>
+        </TouchableOpacity>
           <MaterialCommunityIcons
             name="lifebuoy"
             size={20}
