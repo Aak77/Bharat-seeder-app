@@ -171,22 +171,25 @@ const styles = StyleSheet.create({
   cardContainer: {
     backgroundColor: "#FFFFFF",
     borderRadius: 16,
-    padding: 6,
+    padding: 8,
     elevation: 2,
   },
 
   machineCard: {
     flexDirection: "row",
     alignItems: "center",
-    padding: 8,
+    padding: 10, // Slightly increased padding for a better look
     borderRadius: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: "#F0F0F0",
+    borderWidth: 1,
+    borderColor: "transparent", // Invisible border prevents the card from "jumping" when selected
+    borderBottomColor: "#F0F0F0", // Keeps the clean divider line
+    marginBottom: 4, // Gives the bottom border room to breathe so it doesn't get clipped
   },
+
   machineCardSelected: {
     backgroundColor: "#E8F5E9",
     borderColor: "#29563A",
-    borderWidth: 1,
+    borderBottomColor: "#29563A", // <-- This is the magic line that fixes the bottom border!
   },
   machineIconBg: {
     width: 34,
